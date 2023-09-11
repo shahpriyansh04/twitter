@@ -10,16 +10,19 @@ export default function Home() {
     <main className="h-screen flex justify-center items-center">
       <Link href="/signup">
         <Button>Signup</Button>
-        {user && (
-          <Button
-            onClick={async () => {
-              const { error } = await supabase.auth.signOut();
-            }}
-          >
-            Signout
-          </Button>
-        )}
       </Link>
+      <Link href="/login">
+        <Button>Login</Button>
+      </Link>
+      {user && (
+        <Button
+          onClick={async () => {
+            const { error } = await supabase.auth.signOut();
+          }}
+        >
+          Signout
+        </Button>
+      )}
     </main>
   );
 }

@@ -10,11 +10,27 @@ export const AuthContextProvider = ({ children }) => {
   const [user, setUser] = React.useState(null);
   const [loading, setLoading] = React.useState(true);
 
-  supabase.auth.onAuthStateChange((event, session) => {
-    if (event == "SIGNED_IN") setUser(session.user);
-    if (event == "SIGNED_OUT") setUser(null);
+  const handleAuth = async () => {
+    const session = await supabase.auth.getSession();
+
+    setUser(session?.user ?? null);
     setLoading(false);
-  });
+
+    // listen for changes to auth
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setUser(session?.user ?? null);
+        setLoading(false);
+      }
+    );
+    return listener;
+  };
+
+  React.useEffect(() => {
+    // get session data if there is an active session
+    handleAuth();
+    // cleanup the useEffect hook
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user }}>

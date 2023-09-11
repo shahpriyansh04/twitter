@@ -1,8 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { useAuth, useUser } from "@/lib/auth";
-import createUser from "@/lib/auth/createUser";
+import { useAuth } from "@/lib/auth";
+import loginUser from "@/lib/auth/loginUser";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
@@ -25,14 +25,14 @@ export default function Signup() {
 
   const onSubmit = (data) => {
     console.log(data);
-    createUser(data.email, data.password, data.name, data.username);
+    loginUser(data.email, data.password);
   };
   console.log(errors);
   return (
     <div className="h-screen flex justify-center items-center">
       <Card className="w-[350px]">
         <CardHeader>
-          <CardTitle>Create a new user</CardTitle>
+          <CardTitle>Log into an existing account</CardTitle>
         </CardHeader>
         <CardContent>
           <form
@@ -41,27 +41,12 @@ export default function Signup() {
             onSubmit={handleSubmit(onSubmit)}
           >
             <Input
-              placeholder="Full Name"
-              type="text"
-              id="name"
-              {...register("name", { required: true })}
-            />
-            <Input
               placeholder="Email"
               type="email"
               id="email"
               {...register("email", { required: true })}
             />
-            <Input
-              placeholder="Username"
-              type="username"
-              id="username"
-              {...register("username", {
-                required: true,
-                minLength: 6,
-                maxLength: 10,
-              })}
-            />
+
             <Input
               type="password"
               placeholder="Password"
@@ -69,7 +54,7 @@ export default function Signup() {
               {...register("password", { required: true, minLength: 6 })}
             />
             <Button type="submit" value="Submit">
-              Signup
+              Login
             </Button>
           </form>
         </CardContent>
