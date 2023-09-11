@@ -1,28 +1,22 @@
-import { Button } from "@/components/ui/button";
+import Sidebar from "@/components/Sidebar";
 import { useAuth } from "@/lib/auth";
-import supabase from "@/lib/supabase";
-import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect } from "react";
 
 export default function Home() {
   const { user } = useAuth();
-  console.log(user);
+  const router = useRouter();
+  useEffect(() => {
+    if (!user) {
+      console.log("no user");
+      router.push("/login");
+    }
+  }, [user]);
   return (
-    <main className="h-screen flex justify-center items-center">
-      <Link href="/signup">
-        <Button>Signup</Button>
-      </Link>
-      <Link href="/login">
-        <Button>Login</Button>
-      </Link>
-      {user && (
-        <Button
-          onClick={async () => {
-            const { error } = await supabase.auth.signOut();
-          }}
-        >
-          Signout
-        </Button>
-      )}
+    <main className="grid grid-cols-4 mx-auto h-screen w-4/5 place-content-center">
+      <Sidebar />
+      <div className=" h-screen col-span-2 bg-blue-400"></div>
+      <div className=" h-screen bg-black "></div>
     </main>
   );
 }
