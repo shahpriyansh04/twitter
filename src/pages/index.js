@@ -1,3 +1,5 @@
+import Explore from "@/components/Explore";
+import Feed from "@/components/Feed";
 import Sidebar from "@/components/Sidebar";
 import { useAuth } from "@/lib/auth";
 import { useRouter } from "next/router";
@@ -15,8 +17,8 @@ export default function Home() {
   return (
     <main className="grid grid-cols-4 mx-auto h-screen w-4/5 place-content-center">
       <Sidebar />
-      <div className=" h-screen col-span-2 bg-blue-400"></div>
-      <div className=" h-screen bg-black "></div>
+      <Feed />
+      <Explore />
     </main>
   );
 }

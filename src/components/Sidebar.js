@@ -25,6 +25,7 @@ import { useRouter } from "next/router";
 export default function Sidebar() {
   const { user } = useAuth();
   const router = useRouter();
+  console.log(user);
   useEffect(() => {
     if (!user) {
       console.log("no user");
@@ -66,12 +67,12 @@ export default function Sidebar() {
             >
               <Avatar className="w-12 h-12">
                 <AvatarImage
-                  src="https://media.istockphoto.com/id/1337144146/vector/default-avatar-profile-icon-vector.jpg?s=612x612&w=0&k=20&c=BIbFwuv7FxTWvh5S3vB6bkT0Qv8Vn8N5Ffseq84ClGI="
-                  alt="@shadcn"
+                  src={user?.user_metadata?.photo_url}
+                  alt={`@${user?.user_metadata?.username}`}
                 />
               </Avatar>
               <div className="">
-                <p className="font-bold">{name}</p>
+                <p className="font-bold text-left">{name}</p>
                 <p>@{username}</p>
               </div>
               <MoreHorizontal />
