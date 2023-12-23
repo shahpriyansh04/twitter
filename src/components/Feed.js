@@ -28,7 +28,7 @@ export default function Feed() {
                 <TabsTrigger value="following">Following</TabsTrigger>
               </TabsList>
               <Separator className="mt-3" />
-              <ScrollArea className="h-[550px]  px-4">
+              <ScrollArea className="h-[750px]  px-4">
                 <Post />
                 <Separator className="mt-3" />
 
@@ -39,8 +39,11 @@ export default function Feed() {
                       {tweets?.data?.map((tweet) => {
                         return (
                           <Tweet
+                            id={tweet.id}
+                            key={tweet.id}
                             text={tweet.tweet_text}
                             photo_url={tweet.photo_url}
+                            likes={tweet.likes}
                             name={tweet.name}
                             time={tweet.created_at}
                             username={tweet.username}

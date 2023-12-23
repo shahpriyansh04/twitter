@@ -9,8 +9,50 @@ import {
   Repeat2,
   Share,
 } from "lucide-react";
+import { useAuth } from "@/lib/auth";
+import { useMutation, useQueryClient } from "react-query";
+import createLike from "@/lib/tweet/createLike";
+import { cn } from "@/lib/utils";
+import removeLike from "@/lib/tweet/removeLike";
 
-export default function Tweet({ text, photo_url, name, time, username }) {
+export default function Tweet({
+  id,
+  text,
+  photo_url,
+  name,
+  time,
+  username,
+  likes,
+}) {
+  const { user } = useAuth();
+  const like = likes.find((like) => like.user_id === user.id);
+  console.log(!!like);
+  const queryClient = useQueryClient();
+  const { mutate } = useMutation(
+    "create-like",
+    (tweet_id) => createLike(tweet_id, user.id),
+    {
+      onSuccess: () => {
+        queryClient.refetchQueries("tweets");
+      },
+    }
+  );
+  const removeMutation = useMutation("remove-like", (id) => removeLike(id), {
+    onSuccess: () => {
+      console.log("removed");
+      queryClient.refetchQueries("tweets");
+    },
+    onError: (e) => {
+      console.log(e);
+    },
+  });
+  const handleLike = () => {
+    if (!!like) removeMutation.mutate(like.id);
+    else {
+      mutate(id, user.id);
+    }
+  };
+
   return (
     <div>
       <div
@@ -46,9 +88,15 @@ export default function Tweet({ text, photo_url, name, time, username }) {
                 <Repeat2 className="w-6 h-6" />
                 <p>200</p>
               </div>
-              <div className="flex-1 flex items-center space-x-2 hover:text-red-500  transition-all duration-150 ease-out">
-                <Heart className="w-5 h-5" />
-                <p>200</p>
+              <div
+                className="flex-1 flex items-center space-x-2 hover:text-red-500  transition-all duration-150 ease-out"
+                onClick={handleLike}
+              >
+                <Heart
+                  fill={like ? "red" : "none"}
+                  className={cn("w-5 h-5", like && "text-red-500")}
+                />
+                <p>{likes.length}</p>
               </div>
               <div className="flex-1 flex items-center space-x-2 hover:text-blue-500 transition-all duration-150 ease-out">
                 <BarChart2 className="w-5 h-5" />
