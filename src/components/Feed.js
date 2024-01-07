@@ -35,7 +35,7 @@ export default function Feed() {
                 <TabsContent value="for-you">For you</TabsContent>
                 <TabsContent value="following">
                   {tweets?.data != null && (
-                    <div className="flex flex-col max-w-xl">
+                    <div className="flex flex-col max-w-full">
                       {tweets?.data?.map((tweet) => {
                         return (
                           <Tweet

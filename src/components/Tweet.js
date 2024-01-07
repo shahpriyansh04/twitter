@@ -14,6 +14,10 @@ import { useMutation, useQueryClient } from "react-query";
 import createLike from "@/lib/tweet/createLike";
 import { cn } from "@/lib/utils";
 import removeLike from "@/lib/tweet/removeLike";
+import { Input } from "./ui/input";
+import { Button } from "./ui/button";
+import createComment from "@/lib/tweet/createComment";
+import { useState } from "react";
 
 export default function Tweet({
   id,
@@ -25,8 +29,8 @@ export default function Tweet({
   likes,
 }) {
   const { user } = useAuth();
+  const [comment, setComment] = useState("");
   const like = likes.find((like) => like.user_id === user.id);
-  console.log(!!like);
   const queryClient = useQueryClient();
   const { mutate } = useMutation(
     "create-like",
@@ -46,6 +50,27 @@ export default function Tweet({
       console.log(e);
     },
   });
+
+  const commentMutation = useMutation(
+    "create-comment",
+    (comment) =>
+      createComment({
+        user_id: user.id,
+        tweet_id: id,
+        comment_id: null,
+        comment_text: comment,
+      }),
+    {
+      onSuccess: () => {
+        console.log("removed");
+        queryClient.refetchQueries("tweets");
+      },
+      onError: (e) => {
+        console.log(e);
+      },
+    }
+  );
+
   const handleLike = () => {
     if (!!like) removeMutation.mutate(like.id);
     else {
@@ -53,11 +78,16 @@ export default function Tweet({
     }
   };
 
+  const handleComment = () => {
+    commentMutation.mutate(comment);
+    setComment("");
+  };
+
   return (
-    <div>
+    <div className="w-full  ">
       <div
         className="flex items-start space-x-4 w-full hover:cursor-pointer
-        transition-all duration-150 ease-out
+        transition-all duration-150 ease-out px-3
       hover:bg-gray-100"
       >
         <div>
@@ -105,9 +135,27 @@ export default function Tweet({
             </div>
             <Share className="w-5 h-5 hover:text-blue-500 transition-all duration-150 ease-out" />
           </div>
+          <div className="flex w-full my-2 items-center gap-2">
+            <Avatar className="w-12 h-12 bg-transparent">
+              <AvatarImage src={photo_url} alt={`@${username}`} />
+            </Avatar>
+            <input
+              value={comment}
+              onChange={(e) => setComment(e.target.value)}
+              type="text"
+              placeholder="Comment"
+              className="flex-1 py-2 bg-transparent outline-none"
+            />
+            <Button
+              onClick={handleComment}
+              className="rounded-full text-md px-4 py-1"
+            >
+              Post
+            </Button>
+          </div>
         </div>
       </div>
-      <Separator />
+      <Separator className="" />
     </div>
   );
 }
